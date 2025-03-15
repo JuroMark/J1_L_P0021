@@ -5,14 +5,6 @@ import utils.Validate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lớp Student chứa thông tin của một sinh viên:
- * - id, name
- * - Danh sách học kỳ (semesters) và khóa học (courses)
- *
- * Lớp cũng tích hợp phương thức nhập dữ liệu inputStudents(),
- * theo yêu cầu của giảng viên (mặc dù về lý thuyết nên tách riêng).
- */
 public class Student {
     private String id;
     private String name;
@@ -119,7 +111,7 @@ public class Student {
                                 IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
                         .toUpperCase();
                 if (choice.equals("Y")) {
-                    // Hiển thị danh sách khóa học hiện có
+                    // Show current courses and semesters
                     System.out.println("Current courses and semesters:");
                     for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
                         System.out.println((i + 1) + ". " + existingStudent.getSemesters().get(i) +

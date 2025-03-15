@@ -2,20 +2,17 @@ package utils;
 
 import java.util.Scanner;
 
-/**
- * Lớp Validate cung cấp các phương thức để nhận và kiểm tra dữ liệu đầu vào.
- */
 public class Validate {
     public static final Scanner sc = new Scanner(System.in);
 
     /**
-     * Nhận một chuỗi từ người dùng và kiểm tra với regex.
+     * Get a string.
      *
-     * @param prompt       Tin nhắn hiển thị khi nhập.
-     * @param regex        Biểu thức chính quy để kiểm tra.
-     * @param errorInvalid Thông báo lỗi nếu không khớp.
-     * @param errorEmpty   Thông báo lỗi nếu chuỗi rỗng.
-     * @return Chuỗi hợp lệ.
+     * @param prompt       The message required input.
+     * @param regex        The regular expression to check the string.
+     * @param errorInvalid The message required if the string is invalid.
+     * @param errorEmpty   The message required if the input is empty.
+     * @return a valid string.
      */
     public static String getString(String prompt, String regex, String errorInvalid) {
         while (true) {
@@ -31,12 +28,12 @@ public class Validate {
     }
 
     /**
-     * Nhận một số nguyên trong khoảng xác định.
+     * Get an integer in the allowed range.
      *
-     * @param prompt Tin nhắn yêu cầu nhập.
-     * @param min    Giá trị tối thiểu.
-     * @param max    Giá trị tối đa.
-     * @return Số nguyên hợp lệ.
+     * @param prompt The message required input.
+     * @param min    The minimum value.
+     * @param max    The maximum value.
+     * @return The valid integer.
      */
     public static int getInt(String prompt, int min, int max) {
         while (true) {
@@ -55,15 +52,15 @@ public class Validate {
     }
 
     /**
-     * Nhận một số thực (double) nằm trong khoảng cho phép.
+     * Get a real number (double) within the allowed range.
      *
-     * @param prompt             Tin nhắn yêu cầu nhập.
-     * @param errorOutOfRange    Thông báo nếu số không hợp lệ.
-     * @param errorInvalidNumber Thông báo nếu định dạng số sai.
-     * @param errorEmpty         Thông báo nếu nhập rỗng.
-     * @param min                Giá trị tối thiểu.
-     * @param max                Giá trị tối đa.
-     * @return Giá trị double hợp lệ.
+     * @param prompt             The message required input
+     * @param errorOutOfRange    The message required if out of range.
+     * @param errorInvalidNumber The message required if the number format is wrong.
+     * @param errorEmpty         The message required if the input is empty.
+     * @param min                The minimum value.
+     * @param max                The maximum value.
+     * @return The valid real number.
      */
     public static double getDouble(String prompt, String errorOutOfRange, String errorInvalidNumber,
             String errorEmpty, double min, double max) {

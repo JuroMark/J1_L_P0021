@@ -1,12 +1,43 @@
 package main;
 
-import view.Menu;
+import bo.StudentBO;
+import utils.Validate; // Ensure this import is correct and the Validate class is in the util package
 
-/**
- * Lớp Main là điểm bắt đầu của chương trình Student Management.
- */
 public class Main {
     public static void main(String[] args) {
-        Menu.displayMenu();
+        StudentBO studentBO = new StudentBO();
+        while (true) {
+            System.out.println("\nWELCOME TO STUDENT MANAGEMENT");
+            System.out.println("1. Create");
+            System.out.println("2. Find and Sort");
+            System.out.println("3. Update/Delete");
+            System.out.println("4. Report");
+            System.out.println("5. Exit");
+            int choice = Validate.getInt("Please choose an option (1-5): ", 1, 5);
+            switch (choice) {
+                case 1:
+                    // Add student to list
+                    studentBO.addStudent();
+                    break;
+                case 2:
+                    // Find and sort student from list
+                    studentBO.findSort();
+                    break;
+                case 3:
+                    // Update or delete student from list
+                    studentBO.updateOrDelete();
+                    break;
+                case 4:
+                    // Report student list
+                    studentBO.report();
+                    break;
+                case 5:
+                    // Exit program
+                    System.out.println("Exiting program...");
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 }
