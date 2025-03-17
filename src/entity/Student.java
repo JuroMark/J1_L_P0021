@@ -66,8 +66,7 @@ public class Student {
         this.courses.add(course);
     }
 
-    @Override
-    public String toString() {
+    public String output() {
         StringBuilder result = new StringBuilder(String.format("ID: %s, Name: %s\n", id, name));
         for (int i = 0; i < semesters.size(); i++) {
             result.append(String.format("  Semester: %s | Course: %s\n", semesters.get(i), courses.get(i)));
@@ -82,7 +81,7 @@ public class Student {
      *
      * @return The student list is imported.
      */
-    public static List<Student> inputStudents() {
+    public List<Student> inputStudents() {
         List<Student> students = new ArrayList<>();
         System.out.println("====== Student Management Program ======");
         while (true) {
@@ -110,7 +109,7 @@ public class Student {
                         .getString("This ID already exists. Do you want to add a new course for this student? (Y/N): ",
                                 IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
                         .toUpperCase();
-                if (choice.equals("Y")) {
+                if (choice.equalsIgnoreCase("Y")) {
                     // Show current courses and semesters
                     System.out.println("Current courses and semesters:");
                     for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
@@ -149,7 +148,7 @@ public class Student {
             String cont = Validate.getString("Do you want to add another student? (Y/N): ",
                     IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
                     .toUpperCase();
-            if (!cont.equals("Y")) {
+            if (!cont.equalsIgnoreCase("Y")) {
                 break;
             }
         }

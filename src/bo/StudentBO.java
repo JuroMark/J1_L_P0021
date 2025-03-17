@@ -23,6 +23,10 @@ public class StudentBO {
         this.students = new ArrayList<>();
     }
 
+    public StudentBO(List<Student> students) {
+        this.students = students;
+    }
+
     // Helper method to find a student by ID (case-insensitive)
     private Student findStudentById(String id) {
         for (Student s : students) {
@@ -38,18 +42,21 @@ public class StudentBO {
      * If the entered ID already exists, it allows adding a new course for that
      * student.
      */
-    public void addStudent() {
+    public void createStudent() {
         System.out.println("===== Create Students =====");
         while (true) {
-            // If there are already 10 or more students, ask to continue adding.
-            if (students.size() >= 10) {
+            if (students.size() < 10) {
+                System.out.println("You must create at least 10 students. Current count: " + students.size());
+            } else {
+                // Nếu đã đủ 10, hỏi người dùng có muốn tiếp tục nhập không.
                 String choice = Validate.getString("Do you want to continue adding students? (Y/N): ",
                         IConstant.REGEX_YN,
                         "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-                if (!choice.equals("Y")) {
+                if (choice.equals("N")) {
                     break;
                 }
             }
+            // If there are already 10 or more students, ask to continue adding.
             String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
                     "ID can only contain letters and numbers.");
             // Check for duplicate by ID (case-insensitive)
@@ -60,7 +67,7 @@ public class StudentBO {
                                 IConstant.REGEX_YN,
                                 "Invalid choice! Please enter only 'Y' or 'N'.")
                         .toUpperCase();
-                if (choice.equals("Y")) {
+                if (choice.equalsIgnoreCase("Y")) {
                     System.out.println("Current courses and semesters:");
                     for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
                         System.out.println((i + 1) + ". " + existingStudent.getSemesters().get(i)
@@ -100,10 +107,12 @@ public class StudentBO {
                 students.add(s);
                 System.out.println("Student added successfully.");
             }
-            String cont = Validate.getString("Do you want to add another student? (Y/N): ",
-                    IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-            if (!cont.equals("Y")) {
-                break;
+            if (students.size() >= 10) {
+                String cont = Validate.getString("Do you want to add another student? (Y/N): ",
+                        IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
+                if (!cont.equalsIgnoreCase("Y")) {
+                    break;
+                }
             }
         }
     }
@@ -114,7 +123,7 @@ public class StudentBO {
      * then sorts and displays them in alphabetical order.
      */
     public void findSort() {
-        String keyword = Validate.getString("Enter student name (or part) to search: ",
+        String keyword = Validate.getString("Enter student name to search: ",
                 ".*", "Invalid input.");
         List<Student> found = new ArrayList<>();
         for (Student s : students) {
@@ -123,8 +132,8 @@ public class StudentBO {
             }
         }
         if (found.isEmpty()) {
-            System.out.println("No student found with that name.");
-            return;
+            System.out.println("No student found with that name. Please try again.");
+            findSort();
         }
         Collections.sort(found, new Comparator<Student>() {
             public int compare(Student s1, Student s2) {
@@ -133,7 +142,7 @@ public class StudentBO {
         });
         System.out.println("Found and sorted students:");
         for (Student s : found) {
-            System.out.println(s);
+            System.out.println(s.output());
         }
     }
 
@@ -146,19 +155,28 @@ public class StudentBO {
                 "ID can only contain letters and numbers.");
         Student student = findStudentById(id);
         if (student == null) {
-            System.out.println("Student not found.");
+            System.out.println("Student not found, Try again.");
+            updateOrDelete();
             return;
         }
         System.out.println("Student found:");
-        System.out.println(student);
+        System.out.println(students);
         String choice = Validate.getString("Do you want to update (U) or delete (D) this student? ",
                 IConstant.REGEX_UD, "Invalid choice. Enter U or D.").toUpperCase();
-        if (choice.equals("U")) {
+        if (choice.equalsIgnoreCase("U")) {
             String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
                     "Name can only contain letters and spaces.");
             student.setName(newName);
+            String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
+                    "Semester must be a number.");
+            student.getSemesters().clear();
+            student.addSemester(newSemester);
+            String newCourse = Validate.getString("Enter new course name: ", IConstant.REGEX_COURSE,
+                    "Course name can only contain letters, numbers and spaces.");
+            student.setCourses(new ArrayList<>());
+            student.addCourse(newCourse);
             System.out.println("Student updated successfully.");
-        } else if (choice.equals("D")) {
+        } else if (choice.equalsIgnoreCase("D")) {
             students.remove(student);
             System.out.println("Student deleted successfully.");
         }
