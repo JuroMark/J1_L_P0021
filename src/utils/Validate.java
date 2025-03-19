@@ -11,7 +11,6 @@ public class Validate {
      * @param prompt       The message required input.
      * @param regex        The regular expression to check the string.
      * @param errorInvalid The message required if the string is invalid.
-     * @param errorEmpty   The message required if the input is empty.
      * @return a valid string.
      */
     public static String getString(String prompt, String regex, String errorInvalid) {
@@ -54,25 +53,19 @@ public class Validate {
     /**
      * Get a real number (double) within the allowed range.
      *
-     * @param prompt             The message required input
+     * @param prompt             The message required input.
      * @param errorOutOfRange    The message required if out of range.
      * @param errorInvalidNumber The message required if the number format is wrong.
-     * @param errorEmpty         The message required if the input is empty.
      * @param min                The minimum value.
      * @param max                The maximum value.
      * @return The valid real number.
      */
     public static double getDouble(String prompt, String errorOutOfRange, String errorInvalidNumber,
-            String errorEmpty, double min, double max) {
+            double min, double max) {
         while (true) {
             try {
                 System.out.print(prompt);
-                String input = sc.nextLine().trim();
-                if (input.isEmpty()) {
-                    System.out.println(errorEmpty);
-                    continue;
-                }
-                double value = Double.parseDouble(input);
+                double value = Double.parseDouble(sc.nextLine().trim());
                 if (value >= min && value <= max) {
                     return value;
                 } else {
@@ -83,4 +76,5 @@ public class Validate {
             }
         }
     }
+
 }

@@ -15,7 +15,7 @@ public class Main {
             System.out.println("4. Report");
             System.out.println("5. Load sample data");
             System.out.println("5. Exit");
-            int choice = Validate.getInt("Please choose an option (1-5): ", 1, 5);
+            int choice = Validate.getInt("Please choose an option (1-6): ", 1, 6);
             switch (choice) {
                 case 1:
                     // Add student to list

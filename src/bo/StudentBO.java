@@ -27,6 +27,14 @@ public class StudentBO {
         this.students = students;
     }
 
+    public void addStudent() {
+        System.out.println("===== Create Student =====");
+        Student s = new Student();
+        s.inputStudent();
+        students.add(s);
+        System.out.println("Student added successfully.\n");
+    }
+
     // Helper method to find a student by ID (case-insensitive)
     private Student findStudentById(String id) {
         for (Student s : students) {
@@ -75,9 +83,31 @@ public class StudentBO {
                     }
                     String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
                             "Semester must be a number.");
-                    String newCourse = Validate.getString("Enter new course name: ", IConstant.REGEX_COURSE,
-                            "Course name can only contain letters, numbers and spaces.");
-                    // Check if the course for the semester already exists
+                    String newCourse = "";
+                    boolean validCourse = false;
+                    while (!validCourse) {
+                        System.out.println("Choose a course:");
+                        System.out.println("1. Java");
+                        System.out.println("2. .Net");
+                        System.out.println("3. C/C++");
+                        int courseChoice = Validate.getInt("Enter your choice (1-3): ", 1, 3);
+                        switch (courseChoice) {
+                            case 1:
+                                newCourse = "Java";
+                                validCourse = true;
+                                break;
+                            case 2:
+                                newCourse = ".Net";
+                                validCourse = true;
+                                break;
+                            case 3:
+                                newCourse = "C/C++";
+                                validCourse = true;
+                                break;
+                            default:
+                                System.out.println("Invalid course selection. Please try again.");
+                        }
+                    }
                     boolean exists = false;
                     for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
                         if (existingStudent.getSemesters().get(i).equalsIgnoreCase(newSemester) &&
@@ -101,8 +131,28 @@ public class StudentBO {
                         "Name can only contain letters and spaces.");
                 String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
                         "Semester must be a number.");
-                String course = Validate.getString("Enter course name: ", IConstant.REGEX_COURSE,
-                        "Course name can only contain letters, numbers and spaces.");
+                String course = "";
+                while (true) {
+                    System.out.println("Choose a course:");
+                    System.out.println("1. Java");
+                    System.out.println("2. .Net");
+                    System.out.println("3. C/C++");
+                    System.out.print("Enter your choice (1-3): ");
+                    int choice = Validate.getInt("Invalid choice. Please enter 1, 2, or 3.", 1, 3);
+
+                    switch (choice) {
+                        case 1:
+                            course = "Java";
+                            break;
+                        case 2:
+                            course = ".Net";
+                            break;
+                        case 3:
+                            course = "C/C++";
+                            break;
+                    }
+                    break;
+                }
                 Student s = new Student(id, name, semester, course);
                 students.add(s);
                 System.out.println("Student added successfully.");
@@ -160,7 +210,7 @@ public class StudentBO {
             return;
         }
         System.out.println("Student found:");
-        System.out.println(students);
+        System.out.println(student.output());
         String choice = Validate.getString("Do you want to update (U) or delete (D) this student? ",
                 IConstant.REGEX_UD, "Invalid choice. Enter U or D.").toUpperCase();
         if (choice.equalsIgnoreCase("U")) {
@@ -171,8 +221,31 @@ public class StudentBO {
                     "Semester must be a number.");
             student.getSemesters().clear();
             student.addSemester(newSemester);
-            String newCourse = Validate.getString("Enter new course name: ", IConstant.REGEX_COURSE,
-                    "Course name can only contain letters, numbers and spaces.");
+            String newCourse = "";
+            boolean validCourse = false;
+            while (!validCourse) {
+                System.out.println("Choose a course:");
+                System.out.println("1. Java");
+                System.out.println("2. .Net");
+                System.out.println("3. C/C++");
+                int courseChoice = Validate.getInt("Enter your choice (1-3): ", 1, 3);
+                switch (courseChoice) {
+                    case 1:
+                        newCourse = "Java";
+                        validCourse = true;
+                        break;
+                    case 2:
+                        newCourse = ".Net";
+                        validCourse = true;
+                        break;
+                    case 3:
+                        newCourse = "C/C++";
+                        validCourse = true;
+                        break;
+                    default:
+                        System.out.println("Invalid course selection. Please try again.");
+                }
+            }
             student.setCourses(new ArrayList<>());
             student.addCourse(newCourse);
             System.out.println("Student updated successfully.");

@@ -81,77 +81,36 @@ public class Student {
      *
      * @return The student list is imported.
      */
-    public List<Student> inputStudents() {
-        List<Student> students = new ArrayList<>();
-        System.out.println("====== Student Management Program ======");
+    public void inputStudent() {
+        this.id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
+                "ID can only contain letters and numbers.");
+        this.name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,
+                "Name can only contain letters and spaces.");
+        String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
+                "Semester must be a number.");
+        String course = "";
         while (true) {
-            System.out.println("Please input student information:");
-            String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
-                    "ID can only contain letters and numbers.");
-            String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,
-                    "Name can only contain letters and spaces.");
-            String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
-                    "Semester must be a number.");
-            String course = Validate.getString("Enter course name: ", IConstant.REGEX_COURSE,
-                    "Course name can only contain letters, numbers and spaces.");
+            System.out.println("Choose a course:");
+            System.out.println("1. Java");
+            System.out.println("2. .Net");
+            System.out.println("3. C/C++");
+            System.out.print("Enter your choice (1-3): ");
+            int choice = Validate.getInt("Invalid choice. Please enter 1, 2, or 3.", 1, 3);
 
-            // Check duplicate by ID (no matter uppercase or lowercase)
-            Student existingStudent = null;
-            for (Student s : students) {
-                if (s.getId().equalsIgnoreCase(id)) {
-                    existingStudent = s;
+            switch (choice) {
+                case 1:
+                    course = "Java";
                     break;
-                }
+                case 2:
+                    course = ".Net";
+                    break;
+                case 3:
+                    course = "C/C++";
+                    break;
             }
-
-            if (existingStudent != null) {
-                String choice = Validate
-                        .getString("This ID already exists. Do you want to add a new course for this student? (Y/N): ",
-                                IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
-                        .toUpperCase();
-                if (choice.equalsIgnoreCase("Y")) {
-                    // Show current courses and semesters
-                    System.out.println("Current courses and semesters:");
-                    for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
-                        System.out.println((i + 1) + ". " + existingStudent.getSemesters().get(i) +
-                                " - " + existingStudent.getCourses().get(i));
-                    }
-                    String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                            "Semester must be a number.");
-                    String newCourse = Validate.getString("Enter new course name: ", IConstant.REGEX_COURSE,
-                            "Course name can only contain letters, numbers and spaces.");
-                    // Check if that course already exists for the same semester
-                    boolean exists = false;
-                    for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
-                        if (existingStudent.getSemesters().get(i).equalsIgnoreCase(newSemester) &&
-                                existingStudent.getCourses().get(i).equalsIgnoreCase(newCourse)) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        existingStudent.addSemester(newSemester);
-                        existingStudent.addCourse(newCourse);
-                        System.out.println("New course added successfully.");
-                    } else {
-                        System.out.println("This course already exists for that semester.");
-                    }
-                } else {
-                    System.out.println("No changes made for student with duplicate ID.");
-                }
-            } else {
-                Student s = new Student(id, name, semester, course);
-                students.add(s);
-                System.out.println("Student added successfully.");
-            }
-
-            String cont = Validate.getString("Do you want to add another student? (Y/N): ",
-                    IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
-                    .toUpperCase();
-            if (!cont.equalsIgnoreCase("Y")) {
-                break;
-            }
+            break;
         }
-        return students;
+        this.semesters.add(semester);
+        this.courses.add(course);
     }
 }
