@@ -3,7 +3,7 @@ package utils;
 import java.util.Scanner;
 
 public class Validate {
-    public static final Scanner sc = new Scanner(System.in);
+    public static final Scanner SCANNER = new Scanner(System.in);
 
     /**
      * Get a string.
@@ -16,7 +16,7 @@ public class Validate {
     public static String getString(String prompt, String regex, String errorInvalid) {
         while (true) {
             System.out.print(prompt);
-            String input = sc.nextLine().trim();
+            String input = SCANNER.nextLine().trim();
             if (!input.matches(regex)) {
                 System.out.println(errorInvalid);
             } else {
@@ -34,20 +34,25 @@ public class Validate {
      * @param max    The maximum value.
      * @return The valid integer.
      */
-    public static int getInt(String prompt, int min, int max) {
-        while (true) {
+    public static int getInt(
+            String messageInfo,
+            String messsageErrorOutOfRange,
+            String messageErrorNumber,
+            int min,
+            int max) {
+        do {
             try {
-                System.out.print(prompt);
-                int number = Integer.parseInt(sc.nextLine().trim());
+                System.out.print(messageInfo);
+                int number = Integer.parseInt(SCANNER.nextLine());
                 if (number >= min && number <= max) {
                     return number;
                 } else {
-                    System.out.println("Number out of range (" + min + " to " + max + ").");
+                    System.out.println(messsageErrorOutOfRange);
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid number. Please try again.");
+                System.out.println(messageErrorNumber);
             }
-        }
+        } while (true);
     }
 
     /**
@@ -65,7 +70,7 @@ public class Validate {
         while (true) {
             try {
                 System.out.print(prompt);
-                double value = Double.parseDouble(sc.nextLine().trim());
+                double value = Double.parseDouble(SCANNER.nextLine().trim());
                 if (value >= min && value <= max) {
                     return value;
                 } else {

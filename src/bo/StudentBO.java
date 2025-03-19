@@ -8,14 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * StudentBO handles the business operations for Student Management:
- * - Creating students (adding new students and adding courses to an existing
- * student if duplicate ID found)
- * - Finding and sorting students by name
- * - Updating or deleting a student
- * - Reporting course counts per student
- */
 public class StudentBO {
     private List<Student> students;
 
@@ -27,15 +19,6 @@ public class StudentBO {
         this.students = students;
     }
 
-    public void addStudent() {
-        System.out.println("===== Create Student =====");
-        Student s = new Student();
-        s.inputStudent();
-        students.add(s);
-        System.out.println("Student added successfully.\n");
-    }
-
-    // Helper method to find a student by ID (case-insensitive)
     private Student findStudentById(String id) {
         for (Student s : students) {
             if (s.getId().equalsIgnoreCase(id)) {
@@ -46,121 +29,59 @@ public class StudentBO {
     }
 
     /**
-     * addStudent() prompts the user to create new students.
-     * If the entered ID already exists, it allows adding a new course for that
-     * student.
+     * createStudent() Enter student list from keyboard.
      */
     public void createStudent() {
-        System.out.println("===== Create Students =====");
         while (true) {
+            // Nếu số lượng chưa đủ 10, thông báo bắt buộc nhập thêm.
             if (students.size() < 10) {
                 System.out.println("You must create at least 10 students. Current count: " + students.size());
             } else {
-                // Nếu đã đủ 10, hỏi người dùng có muốn tiếp tục nhập không.
-                String choice = Validate.getString("Do you want to continue adding students? (Y/N): ",
-                        IConstant.REGEX_YN,
-                        "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-                if (choice.equals("N")) {
+                // Nếu đã đủ 10, hỏi người dùng có muốn tiếp tục thêm không.
+                String cont = Validate.getString("Do you want to continue adding students? (Y/N): ",
+                        IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
+                if (cont.equals("N")) {
                     break;
                 }
             }
-            // If there are already 10 or more students, ask to continue adding.
+
+            // Enter ID from keyboard.
             String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
                     "ID can only contain letters and numbers.");
-            // Check for duplicate by ID (case-insensitive)
+
+            // Check duplicate ID.
             Student existingStudent = findStudentById(id);
             if (existingStudent != null) {
-                String choice = Validate
+                String dupChoice = Validate
                         .getString("This ID already exists. Do you want to add a new course for this student? (Y/N): ",
-                                IConstant.REGEX_YN,
-                                "Invalid choice! Please enter only 'Y' or 'N'.")
+                                IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
                         .toUpperCase();
-                if (choice.equalsIgnoreCase("Y")) {
-                    System.out.println("Current courses and semesters:");
-                    for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
-                        System.out.println((i + 1) + ". " + existingStudent.getSemesters().get(i)
-                                + " - " + existingStudent.getCourses().get(i));
-                    }
+                if (dupChoice.equals("Y")) {
                     String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
                             "Semester must be a number.");
-                    String newCourse = "";
-                    boolean validCourse = false;
-                    while (!validCourse) {
-                        System.out.println("Choose a course:");
-                        System.out.println("1. Java");
-                        System.out.println("2. .Net");
-                        System.out.println("3. C/C++");
-                        int courseChoice = Validate.getInt("Enter your choice (1-3): ", 1, 3);
-                        switch (courseChoice) {
-                            case 1:
-                                newCourse = "Java";
-                                validCourse = true;
-                                break;
-                            case 2:
-                                newCourse = ".Net";
-                                validCourse = true;
-                                break;
-                            case 3:
-                                newCourse = "C/C++";
-                                validCourse = true;
-                                break;
-                            default:
-                                System.out.println("Invalid course selection. Please try again.");
-                        }
-                    }
-                    boolean exists = false;
-                    for (int i = 0; i < existingStudent.getSemesters().size(); i++) {
-                        if (existingStudent.getSemesters().get(i).equalsIgnoreCase(newSemester) &&
-                                existingStudent.getCourses().get(i).equalsIgnoreCase(newCourse)) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        existingStudent.addSemester(newSemester);
-                        existingStudent.addCourse(newCourse);
-                        System.out.println("New course added successfully.");
-                    } else {
-                        System.out.println("This course already exists for that semester.");
-                    }
+                    String newCourse = existingStudent.chooseCourse();
+                    existingStudent.addSemester(newSemester);
+                    existingStudent.addCourse(newCourse);
+                    System.out.println("New course added successfully.");
                 } else {
                     System.out.println("No changes made for student with duplicate ID.");
                 }
-            } else {
-                String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,
-                        "Name can only contain letters and spaces.");
-                String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
-                        "Semester must be a number.");
-                String course = "";
-                while (true) {
-                    System.out.println("Choose a course:");
-                    System.out.println("1. Java");
-                    System.out.println("2. .Net");
-                    System.out.println("3. C/C++");
-                    System.out.print("Enter your choice (1-3): ");
-                    int choice = Validate.getInt("Invalid choice. Please enter 1, 2, or 3.", 1, 3);
-
-                    switch (choice) {
-                        case 1:
-                            course = "Java";
-                            break;
-                        case 2:
-                            course = ".Net";
-                            break;
-                        case 3:
-                            course = "C/C++";
-                            break;
-                    }
-                    break;
-                }
-                Student s = new Student(id, name, semester, course);
-                students.add(s);
-                System.out.println("Student added successfully.");
+                continue;
             }
+
+            String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,
+                    "Name can only contain letters and spaces.");
+            String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
+                    "Semester must be a number.");
+            String course = new Student().chooseCourse();
+            Student s = new Student(id, name, semester, course);
+            students.add(s);
+            System.out.println("Student added successfully.");
+
             if (students.size() >= 10) {
-                String cont = Validate.getString("Do you want to add another student? (Y/N): ",
+                String contAgain = Validate.getString("Do you want to add another student? (Y/N): ",
                         IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-                if (!cont.equalsIgnoreCase("Y")) {
+                if (!contAgain.equals("Y")) {
                     break;
                 }
             }
@@ -168,121 +89,103 @@ public class StudentBO {
     }
 
     /**
-     * findSort() prompts the user for a keyword and finds all students whose name
-     * contains the keyword,
-     * then sorts and displays them in alphabetical order.
+     * findSort() trả về danh sách các sinh viên tìm được (theo từ khóa tên) sau khi
+     * sắp xếp theo tên.
      */
-    public void findSort() {
-        String keyword = Validate.getString("Enter student name to search: ",
-                ".*", "Invalid input.");
+    public List<Student> findSort(String keyword) {
         List<Student> found = new ArrayList<>();
         for (Student s : students) {
             if (s.getName().toLowerCase().contains(keyword.toLowerCase())) {
                 found.add(s);
             }
         }
-        if (found.isEmpty()) {
-            System.out.println("No student found with that name. Please try again.");
-            findSort();
+        if (!found.isEmpty()) {
+            Collections.sort(found, new Comparator<Student>() {
+                public int compare(Student s1, Student s2) {
+                    return s1.getName().compareToIgnoreCase(s2.getName());
+                }
+            });
         }
-        Collections.sort(found, new Comparator<Student>() {
-            public int compare(Student s1, Student s2) {
-                return s1.getName().compareToIgnoreCase(s2.getName());
-            }
-        });
-        System.out.println("Found and sorted students:");
-        for (Student s : found) {
-            System.out.println(s.output());
-        }
+        return found;
     }
 
     /**
-     * updateOrDelete() prompts the user for a student ID, then allows the user to
-     * update or delete the student.
+     * updateOrDelete() Process update or delete students by ID.
+     * Returns true if the operation is successful,
+     * false if the student is not found.
      */
-    public void updateOrDelete() {
-        String id = Validate.getString("Enter student ID to search: ", IConstant.REGEX_ID,
-                "ID can only contain letters and numbers.");
+    public boolean updateOrDelete(String id, String action) {
         Student student = findStudentById(id);
         if (student == null) {
-            System.out.println("Student not found, Try again.");
-            updateOrDelete();
-            return;
+            return false;
         }
-        System.out.println("Student found:");
-        System.out.println(student.output());
-        String choice = Validate.getString("Do you want to update (U) or delete (D) this student? ",
-                IConstant.REGEX_UD, "Invalid choice. Enter U or D.").toUpperCase();
-        if (choice.equalsIgnoreCase("U")) {
-            String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
-                    "Name can only contain letters and spaces.");
-            student.setName(newName);
-            String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                    "Semester must be a number.");
-            student.getSemesters().clear();
-            student.addSemester(newSemester);
-            String newCourse = "";
-            boolean validCourse = false;
-            while (!validCourse) {
-                System.out.println("Choose a course:");
-                System.out.println("1. Java");
-                System.out.println("2. .Net");
-                System.out.println("3. C/C++");
-                int courseChoice = Validate.getInt("Enter your choice (1-3): ", 1, 3);
-                switch (courseChoice) {
-                    case 1:
-                        newCourse = "Java";
-                        validCourse = true;
-                        break;
-                    case 2:
-                        newCourse = ".Net";
-                        validCourse = true;
-                        break;
-                    case 3:
-                        newCourse = "C/C++";
-                        validCourse = true;
-                        break;
-                    default:
-                        System.out.println("Invalid course selection. Please try again.");
-                }
-            }
-            student.setCourses(new ArrayList<>());
-            student.addCourse(newCourse);
-            System.out.println("Student updated successfully.");
-        } else if (choice.equalsIgnoreCase("D")) {
+        if (action.equalsIgnoreCase("U")) {
+            updateStudent(student);
+        } else if (action.equalsIgnoreCase("D")) {
             students.remove(student);
-            System.out.println("Student deleted successfully.");
         }
+        return true;
+    }
+
+    // updateStudent() Update student information.
+    private void updateStudent(Student student) {
+        String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
+                "Name can only contain letters and spaces.");
+        student.setName(newName);
+        String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
+                "Semester must be a number.");
+        student.getSemesters().clear();
+        student.getCourses().clear();
+        student.addSemester(newSemester);
+        String newCourse = student.chooseCourse();
+        student.addCourse(newCourse);
     }
 
     /**
-     * report() displays a report showing, for each student, each course and the
-     * total number of times the student has taken that course.
+     * report() return a report string of student list,
+     * for each student list each course and total number of times taken.
      */
-    public void report() {
-        System.out.println("Student Name | Course | Total Courses");
-        System.out.println("--------------------------------------");
+    public String report() {
+        StringBuilder report = new StringBuilder();
+        report.append("Student Name | Course | Total Courses\n");
+        report.append("--------------------------------------\n");
         for (Student student : students) {
+            // Dùng map logic đơn giản: duyệt qua danh sách course của sinh viên
             List<String> checkedCourses = new ArrayList<>();
-            for (int i = 0; i < student.getCourses().size(); i++) {
-                String course = student.getCourses().get(i);
-                if (checkedCourses.contains(course))
-                    continue;
-                int count = 0;
-                for (String c : student.getCourses()) {
-                    if (c.equalsIgnoreCase(course)) {
-                        count++;
+            for (String course : student.getCourses()) {
+                if (!checkedCourses.contains(course)) {
+                    int count = 0;
+                    for (String c : student.getCourses()) {
+                        if (c.equalsIgnoreCase(course)) {
+                            count++;
+                        }
                     }
+                    report.append(String.format("%-15s | %-10s | %d%n", student.getName(), course, count));
+                    checkedCourses.add(course);
                 }
-                System.out.printf("%-15s | %-10s | %d%n", student.getName(), course, count);
-                checkedCourses.add(course);
             }
         }
+        return report.toString();
     }
 
     /**
-     * getStudents() returns the current list of students.
+     * displayStudents() returns a string representing the list of students.
      */
+    public String displayStudents() {
+        StringBuilder result = new StringBuilder();
+        if (students.isEmpty()) {
+            result.append("No students available.\n");
+        } else {
+            int count = 1;
+            for (Student student : students) {
+                result.append("Student ").append(count).append(":\n");
+                result.append(student.output()).append("\n");
+                count++;
+            }
+        }
+        return result.toString();
+    }
+
     public List<Student> getStudents() {
         return students;
     }

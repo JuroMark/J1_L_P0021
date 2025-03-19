@@ -1,8 +1,11 @@
 package main;
 
 import bo.StudentBO;
+import constant.IConstant;
+import entity.Student;
 import mocks.Data;
-import utils.Validate; // Ensure this import is correct and the Validate class is in the util package
+import utils.Validate;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,32 +17,48 @@ public class Main {
             System.out.println("3. Update/Delete");
             System.out.println("4. Report");
             System.out.println("5. Load sample data");
-            System.out.println("5. Exit");
-            int choice = Validate.getInt("Please choose an option (1-6): ", 1, 6);
+            System.out.println("6. Exit");
+            int choice = Validate.getInt("Please choose an option (1-6): ",
+                    "Out of range (1-6)", "Please input a number.", 1, 6);
             switch (choice) {
                 case 1:
-                    // Add student to list
+                    System.out.println("===== Create Students =====");
                     studentBO.createStudent();
                     break;
                 case 2:
-                    // Find and sort student from list
-                    studentBO.findSort();
+                    String keyword = Validate.getString("Enter student name to search: ", ".*", "Invalid input.");
+                    List<Student> found = studentBO.findSort(keyword);
+                    if (found.isEmpty()) {
+                        System.out.println("No student found with that name.");
+                    } else {
+                        System.out.println("Found and sorted students:");
+                        for (Student s : found) {
+                            System.out.println(s.output());
+                        }
+                    }
                     break;
                 case 3:
-                    // Update or delete student from list
-                    studentBO.updateOrDelete();
+                    String id = Validate.getString("Enter student ID to update/delete: ", IConstant.REGEX_ID,
+                            "ID can only contain letters and numbers.");
+                    String action = Validate.getString("Do you want to update (U) or delete (D) this student? ",
+                            IConstant.REGEX_UD, "Invalid choice.").toUpperCase();
+                    boolean result = studentBO.updateOrDelete(id, action);
+                    if (result) {
+                        System.out.println("Operation successful. Current student list:");
+                        System.out.println(studentBO.displayStudents());
+                    } else {
+                        System.out.println("Student not found.");
+                    }
                     break;
                 case 4:
-                    // Report student list
-                    studentBO.report();
+                    String rep = studentBO.report();
+                    System.out.println(rep);
                     break;
                 case 5:
-                    // Load data from mocks
                     studentBO.getStudents().addAll(Data.getStudents());
                     System.out.println("Sample data loaded successfully.");
                     break;
                 case 6:
-                    // Exit program
                     System.out.println("Exiting program...");
                     return;
                 default:
@@ -47,5 +66,4 @@ public class Main {
             }
         }
     }
-
 }

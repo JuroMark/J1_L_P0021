@@ -58,6 +58,24 @@ public class Student {
         this.courses = courses;
     }
 
+    public String chooseCourse() {
+        int choice = Validate.getInt("1. Java\n2. .Net\n3. C/C++\nChoose course (1-3):",
+                "Out of range. Please try again.", "Please input a number.", 1, 3);
+        switch (choice) {
+            case 1:
+                System.out.println("You chose: Java");
+                return "Java";
+            case 2:
+                System.out.println("You chose: .Net");
+                return ".Net";
+            case 3:
+                System.out.println("You chose: C/C++");
+                return "C/C++";
+            default:
+                return "";
+        }
+    }
+
     public void addSemester(String semester) {
         this.semesters.add(semester);
     }
@@ -88,28 +106,7 @@ public class Student {
                 "Name can only contain letters and spaces.");
         String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
                 "Semester must be a number.");
-        String course = "";
-        while (true) {
-            System.out.println("Choose a course:");
-            System.out.println("1. Java");
-            System.out.println("2. .Net");
-            System.out.println("3. C/C++");
-            System.out.print("Enter your choice (1-3): ");
-            int choice = Validate.getInt("Invalid choice. Please enter 1, 2, or 3.", 1, 3);
-
-            switch (choice) {
-                case 1:
-                    course = "Java";
-                    break;
-                case 2:
-                    course = ".Net";
-                    break;
-                case 3:
-                    course = "C/C++";
-                    break;
-            }
-            break;
-        }
+        String course = chooseCourse();
         this.semesters.add(semester);
         this.courses.add(course);
     }
