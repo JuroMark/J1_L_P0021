@@ -2,6 +2,7 @@ package bo;
 
 import entity.Student;
 import constant.IConstant;
+import constant.IMessage;
 import utils.Validate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +34,9 @@ public class StudentBO {
      */
     public void createStudent() {
         while (true) {
-            // Nếu số lượng chưa đủ 10, thông báo bắt buộc nhập thêm.
             if (students.size() < 10) {
-                System.out.println("You must create at least 10 students. Current count: " + students.size());
+                System.err.println(IMessage.ERR_CREATE_STUDENT + students.size());
             } else {
-                // Nếu đã đủ 10, hỏi người dùng có muốn tiếp tục thêm không.
                 String cont = Validate.getString("Do you want to continue adding students? (Y/N): ",
                         IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
                 if (cont.equals("N")) {
@@ -62,9 +61,9 @@ public class StudentBO {
                     String newCourse = existingStudent.chooseCourse();
                     existingStudent.addSemester(newSemester);
                     existingStudent.addCourse(newCourse);
-                    System.out.println("New course added successfully.");
+                    System.err.println(IMessage.ERR_NEW_COURSE_SUCCESSFULLY);
                 } else {
-                    System.out.println("No changes made for student with duplicate ID.");
+                    System.err.println(IMessage.ERR_NO_CHANGE_DUPLICATEID);
                 }
                 continue;
             }
@@ -76,7 +75,7 @@ public class StudentBO {
             String course = new Student().chooseCourse();
             Student s = new Student(id, name, semester, course);
             students.add(s);
-            System.out.println("Student added successfully.");
+            System.out.println(IMessage.ERR_STUDENT_ADD_SUCCESSFULLY);
 
             if (students.size() >= 10) {
                 String contAgain = Validate.getString("Do you want to add another student? (Y/N): ",
@@ -150,7 +149,6 @@ public class StudentBO {
         report.append("Student Name | Course | Total Courses\n");
         report.append("--------------------------------------\n");
         for (Student student : students) {
-            // Dùng map logic đơn giản: duyệt qua danh sách course của sinh viên
             List<String> checkedCourses = new ArrayList<>();
             for (String course : student.getCourses()) {
                 if (!checkedCourses.contains(course)) {
