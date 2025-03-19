@@ -88,8 +88,8 @@ public class StudentBO {
     }
 
     /**
-     * findSort() trả về danh sách các sinh viên tìm được (theo từ khóa tên) sau khi
-     * sắp xếp theo tên.
+     * findSort() Find students by name containing keyword,
+     * then sort the result by name.
      */
     public List<Student> findSort(String keyword) {
         List<Student> found = new ArrayList<>();
