@@ -85,11 +85,11 @@ public class Student {
     }
 
     public String output() {
-        StringBuilder result = new StringBuilder(String.format("ID: %s, Name: %s\n", id, name));
+        String result = String.format("ID: %s, Name: %s\n", id, name);
         for (int i = 0; i < semesters.size(); i++) {
-            result.append(String.format("  Semester: %s | Course: %s\n", semesters.get(i), courses.get(i)));
+            result += String.format("  Semester: %s | Course: %s\n", semesters.get(i), courses.get(i));
         }
-        return result.toString();
+        return result;
     }
 
     /**
