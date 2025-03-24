@@ -30,12 +30,17 @@ public class StudentBO {
     }
 
     /**
-     * createStudent() Enter student list from keyboard.
+     * createStudent(): create at least 10 students.
+     * - If < 10, display a message to input more students.
+     * - If >= 10, ask if the user wants to continue adding students.
+     * - If duplicate ID, ask if the user wants to add a new course for this
+     * student.
      */
     public void createStudent() {
         while (true) {
+            // if students < 10, display message to input more students
             if (students.size() < 10) {
-                System.err.println(IMessage.ERR_CREATE_STUDENT + students.size());
+                System.err.println(IMessage.CREATE_STUDENT + students.size());
             } else {
                 String cont = Validate.getString("Do you want to continue adding students? (Y/N): ",
                         IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
@@ -44,38 +49,35 @@ public class StudentBO {
                 }
             }
 
-            // Enter ID from keyboard.
-            String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
-                    "ID can only contain letters and numbers.");
+            String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID, IMessage.ID_WARNING);
 
-            // Check duplicate ID.
+            // check duplicate ID
             Student existingStudent = findStudentById(id);
             if (existingStudent != null) {
-                String dupChoice = Validate
-                        .getString("This ID already exists. Do you want to add a new course for this student? (Y/N): ",
-                                IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.")
-                        .toUpperCase();
+                String dupChoice = Validate.getString(
+                        IMessage.ID_DUPLICATE + "(Y/N): ",
+                        IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
                 if (dupChoice.equals("Y")) {
                     String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                            "Semester must be a number.");
+                            IMessage.SEMESTER_WARNING);
                     String newCourse = existingStudent.chooseCourse();
                     existingStudent.addSemester(newSemester);
                     existingStudent.addCourse(newCourse);
-                    System.err.println(IMessage.ERR_NEW_COURSE_SUCCESSFULLY);
+                    System.err.println(IMessage.NEW_COURSE_SUCCESSFULLY);
                 } else {
-                    System.err.println(IMessage.ERR_NO_CHANGE_DUPLICATEID);
+                    System.err.println(IMessage.NO_CHANGE_DUPLICATEID);
                 }
                 continue;
             }
 
-            String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,
-                    "Name can only contain letters and spaces.");
+            // if ID is unique, continue to input other information
+            String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME, IMessage.NAME_WARNING);
             String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
-                    "Semester must be a number.");
+                    IMessage.SEMESTER_WARNING);
             String course = new Student().chooseCourse();
             Student s = new Student(id, name, semester, course);
             students.add(s);
-            System.out.println(IMessage.ERR_STUDENT_ADD_SUCCESSFULLY);
+            System.out.println(IMessage.STUDENT_ADD_SUCCESSFULLY);
 
             if (students.size() >= 10) {
                 String contAgain = Validate.getString("Do you want to add another student? (Y/N): ",
@@ -88,8 +90,8 @@ public class StudentBO {
     }
 
     /**
-     * findSort() Find students by name containing keyword,
-     * then sort the result by name.
+     * findSort() find and sort students by name.
+     * return a list of students whose name contains the keyword.
      */
     public List<Student> findSort(String keyword) {
         List<Student> found = new ArrayList<>();
@@ -109,9 +111,9 @@ public class StudentBO {
     }
 
     /**
-     * updateOrDelete() Process update or delete students by ID.
-     * Returns true if the operation is successful,
-     * false if the student is not found.
+     * updateOrDelete() update or delete a student by ID.
+     * return true if the operation is successful, false if the student is not
+     * found.
      */
     public boolean updateOrDelete(String id, String action) {
         Student student = findStudentById(id);
@@ -126,23 +128,25 @@ public class StudentBO {
         return true;
     }
 
-    // updateStudent() Update student information.
+    // updateStudent() update information of a student.
     private void updateStudent(Student student) {
         String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
-                "Name can only contain letters and spaces.");
+                IMessage.NAME_WARNING);
         student.setName(newName);
         String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                "Semester must be a number.");
+                IMessage.SEMESTER_WARNING);
         student.getSemesters().clear();
         student.getCourses().clear();
         student.addSemester(newSemester);
         String newCourse = student.chooseCourse();
         student.addCourse(newCourse);
+        System.out.println("Student updated successfully.");
     }
 
     /**
-     * report() return a report string of student list,
-     * for each student list each course and total number of times taken.
+     * report() return a report of students and their courses.
+     * for each student, list the courses they are taking and the total number of
+     * courses.
      */
     public String report() {
         StringBuilder report = new StringBuilder();
@@ -167,7 +171,7 @@ public class StudentBO {
     }
 
     /**
-     * displayStudents() returns a string representing the list of students.
+     * displayStudents() return a list of students and their information.
      */
     public String displayStudents() {
         StringBuilder result = new StringBuilder();

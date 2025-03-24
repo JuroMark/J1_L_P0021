@@ -4,6 +4,7 @@ import constant.IConstant;
 import utils.Validate;
 import java.util.ArrayList;
 import java.util.List;
+import bo.StudentBO;
 
 public class Student {
     private String id;
@@ -99,7 +100,7 @@ public class Student {
      *
      * @return The student list is imported.
      */
-    public void inputStudent() {
+    public void inputStudent(StudentBO stdBO) {
         this.id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID,
                 "ID can only contain letters and numbers.");
         this.name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME,

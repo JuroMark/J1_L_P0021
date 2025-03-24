@@ -40,7 +40,7 @@ public class Main {
                 case 3:
                     String id = Validate.getString("Enter student ID to update/delete: ", IConstant.REGEX_ID,
                             "ID can only contain letters and numbers.");
-                    String action = Validate.getString("Do you want to update (U) or delete (D) this student? ",
+                    String action = Validate.getString("Do you want to update (U) or delete (D) this student?: ",
                             IConstant.REGEX_UD, "Invalid choice.").toUpperCase();
                     boolean result = studentBO.updateOrDelete(id, action);
                     if (result) {
