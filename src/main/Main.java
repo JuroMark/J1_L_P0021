@@ -33,7 +33,7 @@ public class Main {
                     } else {
                         System.out.println("Found and sorted students:");
                         for (Student s : found) {
-                            System.out.println(s.output());
+                            s.display();
                         }
                     }
                     break;
@@ -45,7 +45,10 @@ public class Main {
                     boolean result = studentBO.updateOrDelete(id, action);
                     if (result) {
                         System.out.println("Operation successful. Current student list:");
-                        System.out.println(studentBO.displayStudents());
+                        // Hiển thị bằng cách gọi display() của từng Student
+                        for (Student student : studentBO.getStudents()) {
+                            student.display();
+                        }
                     } else {
                         System.out.println("Student not found.");
                     }

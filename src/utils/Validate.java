@@ -27,12 +27,14 @@ public class Validate {
     }
 
     /**
-     * Get an integer in the allowed range.
-     *
-     * @param prompt The message required input.
-     * @param min    The minimum value.
-     * @param max    The maximum value.
-     * @return The valid integer.
+     * 
+     * @param messageInfo             The message required input.
+     * @param messsageErrorOutOfRange The message required if out of range.
+     * @param messageErrorNumber      The message required if the number format is
+     *                                wrong.
+     * @param min                     The minimum value.
+     * @param max                     The maximum value.
+     * @return The valid integer number.
      */
     public static int getInt(
             String messageInfo,

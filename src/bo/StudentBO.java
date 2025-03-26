@@ -20,7 +20,7 @@ public class StudentBO {
         this.students = students;
     }
 
-    private Student findStudentById(String id) {
+    public Student findStudentById(String id) {
         for (Student s : students) {
             if (s.getId().equalsIgnoreCase(id)) {
                 return s;
@@ -36,9 +36,9 @@ public class StudentBO {
      * - If duplicate ID, ask if the user wants to add a new course for this
      * student.
      */
+
     public void createStudent() {
         while (true) {
-            // if students < 10, display message to input more students
             if (students.size() < 10) {
                 System.err.println(IMessage.CREATE_STUDENT + students.size());
             } else {
@@ -48,43 +48,11 @@ public class StudentBO {
                     break;
                 }
             }
-
-            String id = Validate.getString("Enter student ID: ", IConstant.REGEX_ID, IMessage.ID_WARNING);
-
-            // check duplicate ID
-            Student existingStudent = findStudentById(id);
-            if (existingStudent != null) {
-                String dupChoice = Validate.getString(
-                        IMessage.ID_DUPLICATE + "(Y/N): ",
-                        IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-                if (dupChoice.equals("Y")) {
-                    String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                            IMessage.SEMESTER_WARNING);
-                    String newCourse = existingStudent.chooseCourse();
-                    existingStudent.addSemester(newSemester);
-                    existingStudent.addCourse(newCourse);
-                    System.err.println(IMessage.NEW_COURSE_SUCCESSFULLY);
-                } else {
-                    System.err.println(IMessage.NO_CHANGE_DUPLICATEID);
-                }
-                continue;
-            }
-
-            // if ID is unique, continue to input other information
-            String name = Validate.getString("Enter student name: ", IConstant.REGEX_NAME, IMessage.NAME_WARNING);
-            String semester = Validate.getString("Enter semester: ", IConstant.REGEX_SEMESTER,
-                    IMessage.SEMESTER_WARNING);
-            String course = new Student().chooseCourse();
-            Student s = new Student(id, name, semester, course);
-            students.add(s);
-            System.out.println(IMessage.STUDENT_ADD_SUCCESSFULLY);
-
-            if (students.size() >= 10) {
-                String contAgain = Validate.getString("Do you want to add another student? (Y/N): ",
-                        IConstant.REGEX_YN, "Invalid choice! Please enter only 'Y' or 'N'.").toUpperCase();
-                if (!contAgain.equals("Y")) {
-                    break;
-                }
+            Student student = new Student();
+            boolean isNew = student.input(this);
+            if (isNew) {
+                students.add(student);
+                System.out.println(IMessage.STUDENT_ADD_SUCCESSFULLY);
             }
         }
     }
@@ -128,18 +96,24 @@ public class StudentBO {
         return true;
     }
 
-    // updateStudent() update information of a student.
+    /**
+     * updateStudent() update a student by ID.
+     * 
+     * @param student the student to update.
+     */
     private void updateStudent(Student student) {
         String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
                 IMessage.NAME_WARNING);
         student.setName(newName);
-        String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
-                IMessage.SEMESTER_WARNING);
-        student.getSemesters().clear();
-        student.getCourses().clear();
-        student.addSemester(newSemester);
-        String newCourse = student.chooseCourse();
-        student.addCourse(newCourse);
+        String choice = Validate.getString("Do you want to add a new semester? (Y/N): ",
+                IConstant.REGEX_YN, "Invalid choice! Please enter Y or N.").toUpperCase();
+        if (choice.equals("Y")) {
+            String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
+                    IMessage.SEMESTER_WARNING);
+            student.addSemester(newSemester);
+            String newCourse = student.chooseCourse();
+            student.addCourse(newCourse);
+        }
         System.out.println("Student updated successfully.");
     }
 
@@ -147,11 +121,13 @@ public class StudentBO {
      * report() return a report of students and their courses.
      * for each student, list the courses they are taking and the total number of
      * courses.
+     * 
+     * @return a formatted string.
      */
     public String report() {
-        StringBuilder report = new StringBuilder();
-        report.append("Student Name | Course | Total Courses\n");
-        report.append("--------------------------------------\n");
+        String report = String.format("%-15s | %-10s | %s%n", "Student Name", "Course", "Total Courses")
+                + "--------------------------------------\n";
+
         for (Student student : students) {
             List<String> checkedCourses = new ArrayList<>();
             for (String course : student.getCourses()) {
@@ -162,30 +138,12 @@ public class StudentBO {
                             count++;
                         }
                     }
-                    report.append(String.format("%-15s | %-10s | %d%n", student.getName(), course, count));
+                    report += String.format("%-15s | %-10s | %d%n", student.getName(), course, count);
                     checkedCourses.add(course);
                 }
             }
         }
-        return report.toString();
-    }
-
-    /**
-     * displayStudents() return a list of students and their information.
-     */
-    public String displayStudents() {
-        StringBuilder result = new StringBuilder();
-        if (students.isEmpty()) {
-            result.append("No students available.\n");
-        } else {
-            int count = 1;
-            for (Student student : students) {
-                result.append("Student ").append(count).append(":\n");
-                result.append(student.output()).append("\n");
-                count++;
-            }
-        }
-        return result.toString();
+        return report;
     }
 
     public List<Student> getStudents() {
