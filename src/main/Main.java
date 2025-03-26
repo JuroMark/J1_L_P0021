@@ -2,6 +2,7 @@ package main;
 
 import bo.StudentBO;
 import constant.IConstant;
+import constant.IMessage;
 import entity.Student;
 import mocks.Data;
 import utils.Validate;
@@ -38,19 +39,19 @@ public class Main {
                     }
                     break;
                 case 3:
-                    String id = Validate.getString("Enter student ID to update/delete: ", IConstant.REGEX_ID,
-                            "ID can only contain letters and numbers.");
+                    String id = Validate.getString("Enter student ID to update/delete: ",
+                            IConstant.REGEX_ID,
+                            IMessage.ID_WARNING);
                     String action = Validate.getString("Do you want to update (U) or delete (D) this student?: ",
                             IConstant.REGEX_UD, "Invalid choice.").toUpperCase();
                     boolean result = studentBO.updateOrDelete(id, action);
                     if (result) {
                         System.out.println("Operation successful. Current student list:");
-                        // Hiển thị bằng cách gọi display() của từng Student
                         for (Student student : studentBO.getStudents()) {
                             student.display();
                         }
                     } else {
-                        System.out.println("Student not found.");
+                        System.out.println(IMessage.ID_NOT_FOUND);
                     }
                     break;
                 case 4:
@@ -58,14 +59,12 @@ public class Main {
                     System.out.println(rep);
                     break;
                 case 5:
-                    studentBO.getStudents().addAll(Data.getStudents());
+                    studentBO.setStudents(Data.getStudents());
                     System.out.println("Sample data loaded successfully.");
                     break;
                 case 6:
                     System.out.println("Exiting program...");
                     return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
             }
         }
     }

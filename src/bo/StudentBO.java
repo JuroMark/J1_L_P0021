@@ -16,6 +16,10 @@ public class StudentBO {
         this.students = new ArrayList<>();
     }
 
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     public StudentBO(List<Student> students) {
         this.students = students;
     }
@@ -102,19 +106,24 @@ public class StudentBO {
      * @param student the student to update.
      */
     private void updateStudent(Student student) {
-        String newName = Validate.getString("Enter new student name: ", IConstant.REGEX_NAME,
+        String newName = Validate.getString(
+                "Enter new student name: ",
+                IConstant.REGEX_NAME,
                 IMessage.NAME_WARNING);
         student.setName(newName);
-        String choice = Validate.getString("Do you want to add a new semester? (Y/N): ",
-                IConstant.REGEX_YN, "Invalid choice! Please enter Y or N.").toUpperCase();
+        String choice = Validate.getString(
+                "Do you want to add a new semester? (Y/N): ",
+                IConstant.REGEX_YN,
+                "Invalid choice! Please enter Y or N.").toUpperCase();
         if (choice.equals("Y")) {
-            String newSemester = Validate.getString("Enter new semester: ", IConstant.REGEX_SEMESTER,
+            String newSemester = Validate.getString("Enter new semester: ",
+                    IConstant.REGEX_SEMESTER,
                     IMessage.SEMESTER_WARNING);
             student.addSemester(newSemester);
             String newCourse = student.chooseCourse();
             student.addCourse(newCourse);
         }
-        System.out.println("Student updated successfully.");
+        System.out.println(IMessage.STUDENT_ADD_SUCCESSFULLY);
     }
 
     /**
@@ -125,7 +134,8 @@ public class StudentBO {
      * @return a formatted string.
      */
     public String report() {
-        String report = String.format("%-15s | %-10s | %s%n", "Student Name", "Course", "Total Courses")
+        String report = String.format("%-15s | %-10s | %s%n",
+                "Student Name", "Course", "Total Courses")
                 + "--------------------------------------\n";
 
         for (Student student : students) {

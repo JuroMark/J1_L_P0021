@@ -11,7 +11,7 @@ public class Validate {
      * @param prompt       The message required input.
      * @param regex        The regular expression to check the string.
      * @param errorInvalid The message required if the string is invalid.
-     * @return a valid string.
+     * @return the valid string.
      */
     public static String getString(String prompt, String regex, String errorInvalid) {
         while (true) {
@@ -27,6 +27,7 @@ public class Validate {
     }
 
     /**
+     * Get an integer number within the allowed range.
      * 
      * @param messageInfo             The message required input.
      * @param messsageErrorOutOfRange The message required if out of range.
@@ -34,7 +35,7 @@ public class Validate {
      *                                wrong.
      * @param min                     The minimum value.
      * @param max                     The maximum value.
-     * @return The valid integer number.
+     * @return the valid integer number.
      */
     public static int getInt(
             String messageInfo,
@@ -65,7 +66,7 @@ public class Validate {
      * @param errorInvalidNumber The message required if the number format is wrong.
      * @param min                The minimum value.
      * @param max                The maximum value.
-     * @return The valid real number.
+     * @return the valid real number.
      */
     public static double getDouble(String prompt, String errorOutOfRange, String errorInvalidNumber,
             double min, double max) {
